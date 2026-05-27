@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<meta name="theme-color" content="#0A0908">
+<meta name="description" content="信用も金もない今井涼晴に、それでも¥10,000払ってくれた1000人だけのコミュニティ。THE THOUSAND.">
+<meta property="og:title" content="1万円払った1000人 · THE THOUSAND">
+<meta property="og:description" content="信用も金もない涼晴を信じて、¥10,000払ってくれた1000人の物語。">
+<meta property="og:type" content="website">
+<title>1万円払った1000人 · THE THOUSAND</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700;900&family=Zen+Kaku+Gothic+Antique:wght@400;700;900&family=Crimson+Pro:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --ink:#0A0908;          /* 漆黒・墨 */
+  --ink-2:#15120F;        /* 一段明るい墨 */
+  --paper:#F4F1EA;        /* オフホワイト・和紙 */
+  --paper-2:#E8E2D5;      /* 一段暗い紙 */
+  --vermillion:#E85D3A;   /* 朱赤 */
+  --gold:#C9A961;         /* 金 */
+  --muted:#6B6358;        /* 灰墨 */
+  --line:#2A2520;         /* 細線 */
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+*::selection{background:var(--vermillion);color:var(--paper);}
+html{scroll-behavior:smooth;}
+html,body{
+  background:var(--ink);color:var(--paper);
+  font-family:'Zen Kaku Gothic Antique','Noto Sans JP',sans-serif;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+}
+a{color:inherit;text-decoration:none;}
+button{font:inherit;background:none;border:none;color:inherit;cursor:pointer;}
+
+/* ===== TEXTURE ===== */
+.paper-noise{
+  position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+.vignette{
+  position:fixed;inset:0;z-index:2;pointer-events:none;
+  background:radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,.5) 100%);
+}
+
+/* ===== ENTER GATE ===== */
+.enter-gate{
+  position:fixed;inset:0;z-index:200;
+  background:linear-gradient(180deg, var(--ink) 0%, #050403 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:30px 20px;
+  opacity:1;transition:opacity .8s ease;
+}
+.enter-gate.gone{opacity:0;pointer-events:none;visibility:hidden;}
+.enter-eyebrow{
+  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.5em;
+  text-transform:uppercase;color:var(--vermillion);margin-bottom:32px;
+}
+.enter-eyebrow::before,.enter-eyebrow::after{
+  content:"";display:inline-block;width:30px;height:1px;background:var(--vermillion);
+  vertical-align:middle;margin:0 14px;
+}
+.enter-title-jp{
+  font-family:'Noto Serif JP',serif;font-weight:900;
+  font-size:clamp(48px,7.5vw,116px);line-height:1.1;letter-spacing:-.01em;
+  color:var(--paper);margin-bottom:14px;
+}
+.enter-title-jp em{font-style:normal;color:var(--vermillion);}
+.enter-title-en{
+  font-family:'Crimson Pro',serif;font-style:italic;font-weight:400;
+  font-size:clamp(20px,2.4vw,32px);letter-spacing:.04em;color:var(--gold);
+  margin-bottom:48px;
+}
+.enter-btn{
+  font-family:'Noto Serif JP',serif;font-weight:700;font-size:18px;letter-spacing:.14em;
+  padding:20px 44px;background:var(--vermillion);color:var(--paper);
+  border-radius:0;border:1px solid var(--vermillion);
+  transition:all .4s cubic-bezier(.2,.8,.2,1);
+  position:relative;overflow:hidden;
+}
+.enter-btn::before{
+  content:"";position:absolute;inset:0;background:var(--paper);
+  transform:translateX(-100%);transition:transform .4s cubic-bezier(.2,.8,.2,1);
+}
+.enter-btn:hover{color:var(--ink);}
+.enter-btn:hover::before{transform:translateX(0);}
+.enter-btn span{position:relative;z-index:2;}
+.enter-silent{
+  display:block;margin-top:24px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.3em;
+  text-transform:uppercase;color:var(--muted);
+  border-bottom:1px solid var(--muted);padding-bottom:2px;
+}
+.enter-silent:hover{color:var(--paper);border-color:var(--paper);}
+
+/* ===== SOUND TOGGLE ===== */
+.sound-toggle{
+  position:fixed;top:24px;right:24px;z-index:150;
+  display:flex;align-items:center;gap:12px;
+  padding:12px 18px;background:var(--ink-2);color:var(--paper);
+  border:1px solid var(--line);
+  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;transition:all .3s;
+}
+.sound-toggle:hover{border-color:var(--vermillion);}
+.sound-toggle.on{border-color:var(--gold);color:var(--gold);}
+.eq{display:flex;align-items:flex-end;gap:3px;height:14px;width:18px;}
+.eq i{display:block;width:3px;height:30%;background:var(--muted);transition:background .2s;}
+.sound-toggle.on .eq i{background:var(--gold);animation:eq 1s ease-in-out infinite;}
+.sound-toggle.on .eq i:nth-child(2){animation-delay:.15s;}
+.sound-toggle.on .eq i:nth-child(3){animation-delay:.3s;}
+@keyframes eq{0%,100%{height:30%;}50%{height:100%;}}
+@media(max-width:600px){.sound-toggle{top:16px;right:16px;padding:8px 12px;font-size:10px;}}
+
+/* ===== NAV ===== */
+.nav{
+  position:fixed;top:24px;left:5vw;z-index:140;
+  display:flex;align-items:center;gap:32px;
+  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--paper);mix-blend-mode:difference;
+}
+.nav .brand{font-family:'Noto Serif JP',serif;font-weight:900;font-size:14px;letter-spacing:.08em;text-transform:none;}
+.nav a:hover{color:var(--vermillion);}
+@media(max-width:760px){.nav{top:16px;}.nav a:not(.brand){display:none;}}
+
+/* ===== HERO ===== */
+section{position:relative;z-index:5;}
+.hero{
+  min-height:100vh;padding:130px 6vw 80px;
+  display:flex;flex-direction:column;justify-content:center;
+  position:relative;
+}
+.hero-eyebrow{
+  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.4em;
+  text-transform:uppercase;color:var(--vermillion);margin-bottom:24px;
+  display:flex;align-items:center;gap:14px;
+}
+.hero-eyebrow::before{content:"";width:60px;height:1px;background:var(--vermillion);}
+.hero-title{
+  font-family:'Noto Serif JP',serif;font-weight:900;
+  font-size:clamp(60px,12vw,200px);line-height:.95;letter-spacing:-.03em;
+  color:var(--paper);
+}
+.hero-title .row{display:block;overflow:hidden;}
+.hero-title .row span{display:inline-block;}
+.hero-title .red{color:var(--vermillion);}
+.hero-title-en{
+  font-family:'Crimson Pro',serif;font-style:italic;font-weight:400;
+  font-size:clamp(28px,3.6vw,52px);color:var(--gold);
+  margin-top:14px;letter-spacing:.02em;
+}
+.hero-lead{
+  margin-top:48px;max-width:740px;
+  font-family:'Noto Serif JP',serif;font-weight:400;
+  font-size:clamp(15px,1.4vw,20px);line-height:2;color:var(--paper-2);
+}
+.hero-lead b{color:var(--paper);font-weight:700;}
+.hero-lead em{font-style:normal;color:var(--vermillion);font-weight:700;}
+
+.hero-stat{
+  margin-top:60px;display:flex;align-items:flex-end;gap:28px;flex-wrap:wrap;
+  padding-top:32px;border-top:1px solid var(--line);
+}
+.hero-stat .big{
+  font-family:'Bebas Neue',sans-serif;font-size:clamp(90px,13vw,180px);
+  line-height:.85;letter-spacing:.02em;color:var(--vermillion);
+}
+.hero-stat .big .small{font-size:.4em;color:var(--muted);margin-left:6px;}
+.hero-stat .meta{
+  flex:1;min-width:200px;
+  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--muted);line-height:2;
+}
+.hero-stat .meta b{color:var(--paper);font-weight:400;}
+.hero-stat .meta .red{color:var(--vermillion);}
+
+.hero-cta{margin-top:48px;display:flex;gap:18px;flex-wrap:wrap;}
+.cta-primary{
+  font-family:'Noto Serif JP',serif;font-weight:700;font-size:17px;letter-spacing:.12em;
+  padding:20px 36px;background:var(--vermillion);color:var(--paper);
+  border:1px solid var(--vermillion);
+  position:relative;overflow:hidden;transition:color .35s;
+}
+.cta-primary::before{
+  content:"";position:absolute;inset:0;background:var(--paper);
+  transform:translateY(100%);transition:transform .35s cubic-bezier(.2,.8,.2,1);
+}
+.cta-primary:hover{color:var(--ink);}
+.cta-primary:hover::before{transform:translateY(0);}
+.cta-primary span{position:relative;z-index:2;}
+.cta-secondary{
+  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.25em;
+  text-transform:uppercase;color:var(--paper);padding:20px 0 6px;
+  border-bottom:1px solid var(--paper);transition:color .3s,border-color .3s;
+}
+.cta-secondary:hover{color:var(--gold);border-color:var(--gold);}
+
+.scroll-hint{
+  position:absolute;left:6vw;bottom:32px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.3em;
+  text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:10px;
+}
+.scroll-hint i{
+  display:inline-block;width:1px;height:40px;background:var(--muted);position:relative;overflow:hidden;
+}
+.scroll-hint i::after{content:"";position:absolute;top:-50%;left:0;width:100%;height:50%;background:var(--vermillion);animation:scrolldown 2s ease-in-out infinite;}
+@keyframes scrolldown{0%{top:-50%;}100%{top:100%;}}
+
+/* ===== WHY ===== */
+.why{padding:140px 6vw;background:var(--ink);}
+.why-grid{display:grid;grid-template-columns:1fr 1.6fr;gap:80px;align-items:start;max-width:1300px;margin:0 auto;}
+.why-side{
+  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.3em;
+  text-transform:uppercase;color:var(--vermillion);
+  position:sticky;top:120px;
+}
+.why-side h2{
+  font-family:'Noto Serif JP',serif;font-weight:900;
+  font-size:clamp(48px,7vw,96px);line-height:.95;letter-spacing:-.02em;
+  text-transform:none;color:var(--paper);margin-top:18px;
+}
+.why-body{
+  font-family:'Noto Serif JP',serif;font-weight:400;
+  font-size:clamp(17px,1.5vw,22px);line-height:2.1;color:var(--paper-2);
+}
+.why-body p{margin-bottom:32px;}
+.why-body p:first-of-type::first-letter{
+  font-family:'Crimson Pro',serif;font-weight:700;font-size:5em;line-height:.85;
+  float:left;padding:8px 14px 0 0;color:var(--vermillion);
+}
+.why-body b{color:var(--paper);font-weight:700;}
+.why-body em{font-style:normal;color:var(--vermillion);font-weight:700;}
+.why-body .gold{color:var(--gold);font-weight:700;}
+@media(max-width:900px){.why-grid{grid-template-columns:1fr;gap:40px;}.why-side{position:static;}}
+
+/* ===== MARQUEE ===== */
+.marquee{
+  overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  background:var(--ink);padding:24px 0;
+}
+.marquee-track{display:flex;gap:80px;white-space:nowrap;animation:scroll 40s linear infinite;}
+.marquee-track span{
+  font-family:'Noto Serif JP',serif;font-weight:900;font-size:clamp(28px,3.6vw,52px);
+  letter-spacing:.02em;color:var(--paper);display:inline-flex;align-items:center;gap:80px;
+}
+.marquee-track span::after{content:"・";color:var(--vermillion);}
+@keyframes scroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+
+/* ===== THE 1000 (グリッド名簿) ===== */
+.the1000{padding:140px 6vw;background:linear-gradient(180deg, var(--ink) 0%, #060504 50%, var(--ink) 100%);position:relative;}
+.t1000-head{text-align:center;margin-bottom:80px;}
+.t1000-eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.4em;text-transform:uppercase;color:var(--vermillion);margin-bottom:20px;}
+.t1000-title{
+  font-family:'Noto Serif JP',serif;font-weight:900;
+  font-size:clamp(56px,10vw,160px);line-height:.95;letter-spacing:-.02em;
+}
+.t1000-title .red{color:var(--vermillion);}
+.t1000-en{
+  font-family:'Crimson Pro',serif;font-style:italic;font-weight:400;
+  font-size:clamp(20px,2.2vw,30px);color:var(--gold);margin-top:14px;
+}
+.t1000-rule{
+  margin-top:30px;font-family:'Noto Serif JP',serif;font-size:clamp(15px,1.3vw,19px);
+  line-height:2;color:var(--paper-2);max-width:760px;margin-left:auto;margin-right:auto;
+}
+.t1000-rule b{color:var(--paper);font-weight:700;}
+.t1000-rule em{font-style:normal;color:var(--vermillion);font-weight:700;}
+
+.t1000-counter{display:flex;align-items:flex-end;justify-content:center;gap:14px;margin:80px 0 40px;}
+.t1000-counter .now{
+  font-family:'Bebas Neue',sans-serif;font-size:clamp(120px,22vw,300px);
+  line-height:.85;color:var(--vermillion);letter-spacing:.01em;
+  text-shadow:0 0 60px rgba(232,93,58,.4);
+}
+.t1000-counter .slash{font-family:'Bebas Neue',sans-serif;font-size:clamp(80px,14vw,180px);line-height:.85;color:var(--muted);}
+.t1000-counter .max{font-family:'Bebas Neue',sans-serif;font-size:clamp(80px,14vw,180px);line-height:.85;color:var(--paper);letter-spacing:.01em;}
+
+.t1000-bar{max-width:1100px;margin:0 auto;}
+.t1000-bar .bar{height:8px;background:var(--ink-2);border:1px solid var(--line);overflow:hidden;}
+.t1000-bar .bar i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--vermillion),var(--gold));transition:width 1.8s cubic-bezier(.2,.8,.2,1);}
+.t1000-bar-meta{display:flex;justify-content:space-between;margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);}
+.t1000-bar-meta b{color:var(--paper);font-weight:400;}
+.t1000-bar-meta .red{color:var(--vermillion);}
+
+.legend{display:flex;justify-content:center;gap:32px;margin:48px 0 24px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);flex-wrap:wrap;}
+.legend i{display:inline-block;width:10px;height:10px;margin-right:8px;vertical-align:middle;}
+.legend .l-done i{background:var(--vermillion);box-shadow:0 0 6px var(--vermillion);}
+.legend .l-ms i{background:var(--gold);}
+.legend .l-wait i{background:var(--ink-2);border:1px solid var(--line);}
+
+.grid-1000{display:grid;grid-template-columns:repeat(50,1fr);gap:3px;max-width:1300px;margin:0 auto;}
+.cell{
+  aspect-ratio:1/1;background:var(--ink-2);border:1px solid var(--line);
+  transition:transform .15s,background .25s,box-shadow .25s;cursor:pointer;
+}
+.cell:hover{transform:scale(1.6);z-index:5;border-color:var(--paper);}
+.cell.done{background:var(--vermillion);border-color:rgba(255,255,255,.18);box-shadow:0 0 6px rgba(232,93,58,.55);}
+.cell.done:hover{box-shadow:0 0 18px rgba(232,93,58,.9);}
+.cell.milestone{border-color:var(--gold)!important;}
+@media(max-width:1100px){.grid-1000{grid-template-columns:repeat(40,1fr);}}
+@media(max-width:760px){.grid-1000{grid-template-columns:repeat(25,1fr);gap:2px;}}
+@media(max-width:480px){.grid-1000{grid-template-columns:repeat(20,1fr);}}
+
+.tip{position:fixed;z-index:300;background:var(--ink-2);color:var(--paper);border:1px solid var(--vermillion);padding:12px 16px;font-size:13px;line-height:1.6;pointer-events:none;opacity:0;transition:opacity .2s;max-width:300px;font-family:'Noto Serif JP',serif;}
+.tip.show{opacity:1;}
+.tip b{color:var(--vermillion);font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:.06em;}
+.tip .d{color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.15em;margin-top:4px;}
+
+/* ===== MILESTONES ===== */
+.milestones{padding:120px 6vw;background:var(--ink);}
+.ms-head{text-align:center;margin-bottom:60px;}
+.ms-head h2{font-family:'Noto Serif JP',serif;font-weight:900;font-size:clamp(40px,6vw,80px);line-height:.95;}
+.ms-head h2 .red{color:var(--vermillion);}
+.ms-head p{margin-top:16px;color:var(--muted);font-size:14px;}
+.ms-list{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;max-width:1300px;margin:0 auto;}
+.ms{padding:30px 18px;background:var(--ink-2);border:1px solid var(--line);text-align:center;position:relative;transition:all .35s;}
+.ms .n{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,4.8vw,68px);line-height:.95;letter-spacing:.02em;color:var(--muted);}
+.ms .label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);margin-top:8px;}
+.ms .title{font-family:'Noto Serif JP',serif;font-weight:700;font-size:13px;margin-top:10px;line-height:1.5;color:var(--paper-2);}
+.ms.done{border-color:var(--vermillion);background:linear-gradient(180deg,rgba(232,93,58,.1),var(--ink-2));}
+.ms.done .n{color:var(--vermillion);text-shadow:0 0 20px rgba(232,93,58,.5);}
+.ms.done .label{color:var(--vermillion);}
+.ms.done::after{content:"✓";position:absolute;top:10px;right:14px;color:var(--vermillion);font-family:'Crimson Pro',serif;font-size:20px;}
+.ms.next{border-color:var(--gold);}
+.ms.next .n{color:var(--gold);animation:msPulse 1.8s ease-in-out infinite;}
+.ms.next .label{color:var(--gold);}
+@keyframes msPulse{50%{opacity:.5;}}
+@media(max-width:760px){.ms-list{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:420px){.ms-list{grid-template-columns:repeat(2,1fr);}}
+
+/* ===== PROMISE ===== */
+.promise{padding:140px 6vw;background:var(--ink);}
+.promise-head{margin-bottom:80px;max-width:1100px;}
+.promise-head h2{font-family:'Noto Serif JP',serif;font-weight:900;font-size:clamp(48px,7vw,120px);line-height:.95;letter-spacing:-.02em;}
+.promise-head h2 .red{color:var(--vermillion);}
+.promise-head p{margin-top:20px;color:var(--muted);font-family:'Noto Serif JP',serif;font-size:clamp(15px,1.3vw,18px);line-height:1.9;max-width:600px;}
+.promise-list{display:grid;grid-template-columns:repeat(2,1fr);gap:36px;max-width:1100px;}
+.p-item{padding:36px 32px;background:var(--ink-2);border:1px solid var(--line);transition:border-color .3s;}
+.p-item:hover{border-color:var(--vermillion);}
+.p-item .num{font-family:'Crimson Pro',serif;font-style:italic;font-size:48px;color:var(--vermillion);line-height:1;}
+.p-item .ttl{font-family:'Noto Serif JP',serif;font-weight:900;font-size:24px;margin-top:14px;color:var(--paper);}
+.p-item .body{margin-top:14px;line-height:1.95;color:var(--paper-2);font-size:15px;}
+@media(max-width:760px){.promise-list{grid-template-columns:1fr;}}
+
+/* ===== NAMED ROSTER ===== */
+.named{padding:120px 6vw;background:linear-gradient(180deg,var(--ink-2) 0%,var(--ink) 100%);}
+.named h2{font-family:'Noto Serif JP',serif;font-weight:900;font-size:clamp(36px,5vw,68px);line-height:.95;letter-spacing:-.01em;text-align:center;margin-bottom:24px;}
+.named h2 .red{color:var(--vermillion);}
+.named .sub{text-align:center;color:var(--muted);font-size:14px;margin-bottom:60px;}
+.n-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;max-width:1300px;margin:0 auto;}
+.n-card{padding:24px 26px;background:var(--ink);border:1px solid var(--line);transition:all .3s;}
+.n-card:hover{border-color:var(--vermillion);transform:translateY(-4px);}
+.n-card .id{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--vermillion);letter-spacing:.04em;line-height:1;}
+.n-card .name{font-family:'Noto Serif JP',serif;font-weight:700;font-size:20px;margin-top:8px;color:var(--paper);}
+.n-card .msg{margin-top:10px;line-height:1.8;color:var(--paper-2);font-size:13.5px;}
+.n-card .date{margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;color:var(--muted);}
+
+/* ===== PAY ===== */
+.pay{padding:140px 6vw;background:var(--ink);}
+.pay-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:80px;align-items:start;max-width:1300px;margin:0 auto;}
+.pay-left h2{font-family:'Noto Serif JP',serif;font-weight:900;font-size:clamp(56px,8vw,140px);line-height:.95;letter-spacing:-.02em;}
+.pay-left h2 .red{color:var(--vermillion);}
+.pay-left .en{font-family:'Crimson Pro',serif;font-style:italic;font-size:clamp(20px,2.4vw,32px);color:var(--gold);margin-top:14px;}
+.pay-left p{margin-top:32px;line-height:2.1;color:var(--paper-2);font-family:'Noto Serif JP',serif;font-size:clamp(15px,1.3vw,18px);max-width:540px;}
+.pay-left p b{color:var(--paper);font-weight:700;}
+.pay-left p em{font-style:normal;color:var(--vermillion);font-weight:700;}
+.price{margin-top:36px;display:flex;align-items:flex-end;gap:18px;}
+.price .y{font-family:'Bebas Neue',sans-serif;font-size:clamp(72px,9vw,140px);line-height:.85;color:var(--vermillion);letter-spacing:.01em;}
+.price .lbl{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;margin-bottom:16px;line-height:1.7;}
+.price .lbl b{color:var(--paper);font-weight:400;}
+
+.pay-right{background:var(--ink-2);border:1px solid var(--line);padding:48px 44px;position:relative;}
+.pay-right::before{content:"";position:absolute;top:-1px;left:0;width:80px;height:3px;background:var(--vermillion);}
+.pay-status{display:flex;justify-content:space-between;align-items:center;padding-bottom:24px;margin-bottom:32px;border-bottom:1px solid var(--line);}
+.pay-status .left{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);}
+.pay-status .left b{display:block;color:var(--vermillion);font-weight:400;font-size:14px;margin-top:4px;}
+.pay-status .right{font-family:'Bebas Neue',sans-serif;font-size:40px;color:var(--paper);letter-spacing:.02em;}
+.pay-status .right .max{color:var(--muted);font-size:22px;}
+
+.field{margin-bottom:24px;}
+.field label{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.field label .req{color:var(--vermillion);}
+.field input,.field textarea{
+  width:100%;background:transparent;border:none;border-bottom:1px solid var(--line);
+  padding:10px 0;color:var(--paper);font-family:'Noto Serif JP',serif;font-size:17px;outline:none;
+  transition:border-color .3s;
+}
+.field input:focus,.field textarea:focus{border-bottom-color:var(--vermillion);}
+.field textarea{resize:none;min-height:60px;}
+.field .err{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--vermillion);margin-top:6px;display:none;letter-spacing:.05em;}
+.field.error .err{display:block;}
+.field.error input,.field.error textarea{border-bottom-color:var(--vermillion);}
+
+.submit{
+  width:100%;margin-top:16px;
+  font-family:'Noto Serif JP',serif;font-weight:700;font-size:18px;letter-spacing:.14em;
+  padding:22px;background:var(--vermillion);color:var(--paper);
+  border:1px solid var(--vermillion);position:relative;overflow:hidden;
+  transition:color .35s;
+}
+.submit::before{content:"";position:absolute;inset:0;background:var(--paper);transform:translateX(-100%);transition:transform .4s cubic-bezier(.2,.8,.2,1);}
+.submit:hover{color:var(--ink);}
+.submit:hover::before{transform:translateX(0);}
+.submit span{position:relative;z-index:2;}
+
+.pay-success{position:absolute;inset:0;background:var(--ink-2);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;text-align:center;opacity:0;pointer-events:none;transition:opacity .5s;}
+.pay-success.show{opacity:1;pointer-events:auto;}
+.pay-success .big{font-family:'Noto Serif JP',serif;font-weight:900;font-size:clamp(40px,5.5vw,72px);line-height:.95;color:var(--vermillion);}
+.pay-success .sub{margin-top:18px;color:var(--paper);font-size:16px;line-height:1.85;}
+.pay-success .pp{display:inline-block;margin-top:24px;padding:14px 24px;background:var(--vermillion);color:var(--paper);font-family:'Noto Serif JP',serif;font-weight:700;letter-spacing:.12em;font-size:15px;}
+@media(max-width:900px){.pay-grid{grid-template-columns:1fr;gap:50px;}.pay-right{padding:36px 28px;}}
+
+/* ===== FOOTER ===== */
+.footer{padding:80px 6vw 40px;background:var(--ink);border-top:1px solid var(--line);}
+.footer-big{font-family:'Noto Serif JP',serif;font-weight:900;font-size:clamp(60px,15vw,220px);line-height:.92;letter-spacing:-.03em;color:var(--vermillion);opacity:.18;word-break:break-word;}
+.footer-en{font-family:'Crimson Pro',serif;font-style:italic;font-weight:400;font-size:clamp(20px,2.4vw,36px);color:var(--gold);margin-top:18px;opacity:.7;}
+.footer-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;margin-top:80px;padding-top:32px;border-top:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);}
+.footer-grid b{color:var(--paper);font-weight:400;}
+.footer-grid .c{text-align:center;}
+.footer-grid .r{text-align:right;}
+@media(max-width:760px){.footer-grid{grid-template-columns:1fr;text-align:left!important;}.footer-grid .c,.footer-grid .r{text-align:left;}}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001s!important;transition-duration:.001s!important;}
+}
+</style>
+</head>
+<body>
+
+<div class="paper-noise" aria-hidden="true"></div>
+<div class="vignette" aria-hidden="true"></div>
+
+<!-- ============ ENTER GATE ============ -->
+<div class="enter-gate" id="enterGate">
+  <div class="enter-eyebrow">PAID IN FAITH</div>
+  <h1 class="enter-title-jp">1万円払った<em>1000人</em>。</h1>
+  <div class="enter-title-en">— The Thousand Who Paid in Faith</div>
+  <button class="enter-btn" id="enterPlay"><span>▶  音楽と一緒に入る</span></button>
+  <a class="enter-silent" id="enterSilent" href="#">そっと入る（音なし）</a>
+</div>
+
+<!-- ============ NAV ============ -->
+<nav class="nav">
+  <a href="#" class="brand">1万円払った1000人</a>
+  <a href="#why">物語</a>
+  <a href="#the1000">名簿</a>
+  <a href="#promise">約束</a>
+  <a href="#pay">¥10,000</a>
+</nav>
+
+<!-- ============ SOUND TOGGLE ============ -->
+<button class="sound-toggle" id="soundToggle" aria-label="Toggle sound">
+  <div class="eq"><i></i><i></i><i></i></div>
+  <span id="soundLabel">SOUND OFF</span>
+</button>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="hero-eyebrow">EST. 2026.05.26 · TOKYO ↔ EVERYWHERE</div>
+  <h1 class="hero-title">
+    <span class="row"><span>1万円払った</span></span>
+    <span class="row"><span class="red">1000人</span><span>。</span></span>
+  </h1>
+  <div class="hero-title-en">— The Thousand Who Paid in Faith</div>
+
+  <p class="hero-lead">
+    信用もない、お金もない、<b>今井涼晴</b>を、<br>
+    それでも信じて <em>¥10,000</em> を払ってくれた、たった<b>1000人</b>のコミュニティです。<br>
+    1000人 × ¥10,000 = <b>¥10,000,000</b>。その日、涼晴の借金は消え、<br>
+    ここから本当の経済が、回り始めます。
+  </p>
+
+  <div class="hero-stat">
+    <div class="big" id="heroCount">003<span class="small">/ 1000</span></div>
+    <div class="meta">
+      <div>累計 <b id="heroAmount">¥30,000</b></div>
+      <div>完済まで <b id="heroRemain">997</b> 名</div>
+      <div>次の集会まで <b class="red" id="heroNext">7</b> 名</div>
+    </div>
+  </div>
+
+  <div class="hero-cta">
+    <a href="#pay" class="cta-primary"><span>¥10,000 を払う →</span></a>
+    <a href="#why" class="cta-secondary">なぜこれを作るか</a>
+  </div>
+
+  <div class="scroll-hint">SCROLL <i></i></div>
+</section>
+
+<!-- ============ WHY ============ -->
+<section class="why" id="why">
+  <div class="why-grid">
+    <div class="why-side">
+      [ 01 / 物語 ]
+      <h2>なぜ、<br>1000人なのか。</h2>
+    </div>
+    <div class="why-body">
+      <p>信用がありません。お金もありません。今、僕は<b>借金</b>を抱えています。隠さない、盛らない、事実です。</p>
+
+      <p>その僕に、それでも <em>¥10,000</em> を払ってくれる人が、もし<b>1000人</b>集まったら。1000人 × ¥10,000 = <span class="gold">¥10,000,000</span>。<b>借金は、その日に消えます。</b></p>
+
+      <p>金額の話だけではありません。本当に欲しかったのは、信用がない時期に、それでも<b>「いいよ」と払ってくれた人たちの名前</b>です。その名前を、僕は一生忘れません。</p>
+
+      <p>1人の夢を、1000人で守る。そんなコミュニティを作りたかった。万人を集めて派手にやる気はありません。<b>たった1000人で、十分すぎる</b>のです。</p>
+
+      <p>あなたが #N 番目の名前として、ここに刻まれます。借金が消えた日、僕たちは一緒に祝います。そしてその日から、<b>本当の経済</b>が始まります。</p>
+
+      <p style="color:var(--vermillion);font-weight:700;">— 今井 涼晴</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MARQUEE ============ -->
+<div class="marquee"><div class="marquee-track">
+  <span>1万円払った1000人</span><span>THE THOUSAND</span><span>PAID IN FAITH</span><span>ありがとう</span>
+  <span>1万円払った1000人</span><span>THE THOUSAND</span><span>PAID IN FAITH</span><span>ありがとう</span>
+</div></div>
+
+<!-- ============ THE 1000 ============ -->
+<section class="the1000" id="the1000">
+  <div class="t1000-head">
+    <div class="t1000-eyebrow">[ 02 / 名簿 · ROSTER ]</div>
+    <h2 class="t1000-title">THE <span class="red">1000</span>.</h2>
+    <div class="t1000-en">— Every name burns one chain.</div>
+    <p class="t1000-rule">
+      <b>¥10,000</b> を払ってくれた人が、ここに1人ずつ刻まれます。<br>
+      <em>1000マス</em>が全部埋まる日、僕の借金は消え、本当の経済が始まります。
+    </p>
+  </div>
+
+  <div class="t1000-counter">
+    <div class="now" id="t1000Now">0003</div>
+    <div class="slash">/</div>
+    <div class="max">1000</div>
+  </div>
+
+  <div class="t1000-bar">
+    <div class="bar"><i id="t1000Bar"></i></div>
+    <div class="t1000-bar-meta">
+      <span>CURRENT <b id="t1000Cur">3</b></span>
+      <span class="red">NEXT GATHERING → <b id="t1000Next">10</b></span>
+      <span>REMAINING <b id="t1000Rem">997</b></span>
+    </div>
+  </div>
+
+  <div class="legend">
+    <div class="l-done"><i></i>払ってくれた人</div>
+    <div class="l-ms"><i></i>マイルストーン（集会開催ポイント）</div>
+    <div class="l-wait"><i></i>まだ空いてる席</div>
+  </div>
+
+  <div class="grid-1000" id="grid1000"></div>
+</section>
+
+<!-- ============ MILESTONES ============ -->
+<section class="milestones">
+  <div class="ms-head">
+    <h2>節目ごとに、<span class="red">集まる</span>。</h2>
+    <p>10人 / 20人 / 50人 / 200人 / 500人 / 1000人 — 到達するたびに全員でお祝いします。</p>
+  </div>
+  <div class="ms-list" id="msList"></div>
+</section>
+
+<!-- ============ PROMISE ============ -->
+<section class="promise" id="promise">
+  <div class="promise-head">
+    <h2>4つの<span class="red">約束</span>。</h2>
+    <p>派手な特典はありません。代わりに、4つの約束だけを、守り抜きます。</p>
+  </div>
+  <div class="promise-list">
+    <div class="p-item">
+      <div class="num">i.</div>
+      <div class="ttl">名前は、永久に残ります。</div>
+      <div class="body">あなたの名前は、1000マスの中の1マスとして、完済の日以降もずっと刻まれ続けます。「あの時、信じてくれた人」として。</div>
+    </div>
+    <div class="p-item">
+      <div class="num">ii.</div>
+      <div class="ttl">全員で、お祝いします。</div>
+      <div class="body">10/20/50/200/500/1000人の節目ごとに集会を開きます。借金が完済された日は、人生で一番大きなお祝いを、全員で。</div>
+    </div>
+    <div class="p-item">
+      <div class="num">iii.</div>
+      <div class="ttl">夢を、1000人で守ります。</div>
+      <div class="body">あなたの夢を、誰かが笑った時、1000人が静かにその声を打ち消します。一人にさせません。</div>
+    </div>
+    <div class="p-item">
+      <div class="num">iv.</div>
+      <div class="ttl">借金完済後、本物の経済を始めます。</div>
+      <div class="body">¥10,000,000で借金が消えた日から、1000人と共に「夢を笑わせない側の経済」を回し始めます。それが、僕がここに集まる本当の理由です。</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ NAMED ROSTER ============ -->
+<section class="named">
+  <h2>名前を出してくれた<span class="red">優しい人</span>たち</h2>
+  <p class="sub">公開を許してくれた人だけが、ここに名前で刻まれます。匿名希望の人は1000マスの中で静かに灯ります。</p>
+  <div class="n-list" id="nList"></div>
+</section>
+
+<!-- ============ PAY ============ -->
+<section class="pay" id="pay">
+  <div class="pay-grid">
+    <div class="pay-left">
+      <h2>払う、<span class="red">1万円。</span></h2>
+      <div class="en">— Pay ¥10,000. Become one of The Thousand.</div>
+      <p>
+        信用も金もない涼晴に、<b>¥10,000</b> を払う。<br>
+        それは、人生の物語に、あなたの名前を1行刻むということです。<br>
+        <em>返金はありません。</em> その代わり、あなたは1000マスの中で永久に灯り続けます。
+      </p>
+      <div class="price">
+        <div class="y">¥10,000</div>
+        <div class="lbl"><b>ONE-TIME PAYMENT</b><br>PayPay or 銀行振込<br>1000人だけ・先着順</div>
+      </div>
+      <p style="margin-top:24px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.25em;color:var(--vermillion);text-transform:uppercase;">[ NO REFUND. NAME FOREVER. ]</p>
+    </div>
+
+    <form class="pay-right" id="payForm" novalidate>
+      <div class="pay-status">
+        <div class="left">CURRENT<br><b id="payStatus">0003 / 1000</b></div>
+        <div class="right" id="payBig">997<span class="max">/1000残</span></div>
+      </div>
+      <div class="field" id="fName">
+        <label>NAME <span class="req">*</span></label>
+        <input type="text" name="name" autocomplete="name" placeholder="あなたの名前 / your name">
+        <div class="err">名前を入れてください。</div>
+      </div>
+      <div class="field" id="fEmail">
+        <label>EMAIL <span class="req">*</span></label>
+        <input type="email" name="email" autocomplete="email" placeholder="you@example.com">
+        <div class="err">メアドの形式が違うようです。</div>
+      </div>
+      <div class="field" id="fDream">
+        <label>あなたの一言 <span style="color:var(--muted)">/ optional</span></label>
+        <textarea name="dream" rows="2" placeholder="名簿に添えたいメッセージがあれば（空でもOK）"></textarea>
+      </div>
+      <div class="field" id="fPublic">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;">
+          <input type="checkbox" name="public" style="width:auto;" checked> 名簿に名前を公開してOK
+        </label>
+      </div>
+      <button type="submit" class="submit"><span>¥10,000 を払って 1000人の1人になる →</span></button>
+      <div class="pay-success" id="paySuccess">
+        <div class="big">ありがとう。</div>
+        <div class="sub">あなたは <b id="successId">#0004</b> 番目の名前として刻まれます。<br>支払い方法のご案内を、折り返しメールでお送りします。</div>
+        <a id="successPp" class="pp" href="#" target="_blank" rel="noopener" style="display:none;">▶ PayPayで ¥10,000 を払う</a>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="footer-big">THE THOUSAND</div>
+  <div class="footer-en">— Who Paid in Faith.</div>
+  <div class="footer-grid">
+    <div>© 2026 <b>1万円払った1000人</b><br>EST. 2026.05.26 · 今井 涼晴</div>
+    <div class="c">夢を、笑わせない。<br>ありがとう、1000人。</div>
+    <div class="r"><b>CONTACT</b><br>imai@telewor.com</div>
+  </div>
+</footer>
+
+<div class="tip" id="tip"></div>
+
+<script>
+/* ===== EDIT HERE ===== */
+const CONFIG = {
+  PAYPAY_URL: "",                       // PayPay請求リンク
+  LINE_INVITE_URL: "",                  // LINE オープンチャット招待URL
+  FORM_ENDPOINT: "",                    // Googleフォーム等の送信先
+  MAX: 1000,
+  MILESTONES: [10, 20, 50, 200, 500, 1000],
+  AUDIO_PLAYLIST: ["audio/01.m4a", "audio/02.m4a"],
+  AUDIO_LOOP: true,
+};
+
+const MS_LABELS = {
+  10: "第1回集会・10名",
+  20: "第2回集会・二桁の壁",
+  50: "第3回集会・五十名",
+  200: "第4回集会・¥2M",
+  500: "第5回集会・半数",
+  1000: "FINAL集会・借金完済",
+};
+
+/* ===== LOAD KILLERS ===== */
+async function loadKillers(){
+  try {
+    const r = await fetch('data/killers.json', {cache:'no-cache'});
+    if(r.ok){
+      const j = await r.json();
+      return j.killers || [];
+    }
+  } catch(e){}
+  return [{id:1,name:"涼晴",msg:"建国の祖。",date:"2026-05-26"}];
+}
+
+/* ===== RENDER ===== */
+function render(killers){
+  const cur = killers.length;
+  const max = CONFIG.MAX;
+  const next = CONFIG.MILESTONES.find(m => m > cur) || max;
+  const pct = (cur/max)*100;
+
+  // Hero
+  document.getElementById('heroCount').innerHTML = String(cur).padStart(3,'0') + '<span class="small">/ 1000</span>';
+  document.getElementById('heroAmount').textContent = '¥' + (cur*10000).toLocaleString();
+  document.getElementById('heroRemain').textContent = max - cur;
+  document.getElementById('heroNext').textContent = next - cur;
+
+  // THE 1000
+  document.getElementById('t1000Now').textContent = String(cur).padStart(4,'0');
+  document.getElementById('t1000Cur').textContent = cur;
+  document.getElementById('t1000Next').textContent = next;
+  document.getElementById('t1000Rem').textContent = max - cur;
+  setTimeout(()=>{ document.getElementById('t1000Bar').style.width = pct + '%'; }, 200);
+
+  // Grid
+  const grid = document.getElementById('grid1000');
+  const tip = document.getElementById('tip');
+  const map = new Map(killers.map(k => [k.id, k]));
+  const frag = document.createDocumentFragment();
+  for(let i=1; i<=max; i++){
+    const c = document.createElement('div');
+    c.className = 'cell' + (map.has(i)?' done':'') + (CONFIG.MILESTONES.includes(i)?' milestone':'');
+    c.dataset.id = i;
+    c.addEventListener('mouseenter', e=>{
+      const k = map.get(i);
+      const ms = CONFIG.MILESTONES.includes(i) ? ' · 集会マイルストーン' : '';
+      if(k){
+        tip.innerHTML = `<b>#${String(i).padStart(4,'0')} ${k.name||'優しい人'}</b>${k.msg?`<br>${k.msg}`:''}<div class="d">${k.date||''}${ms}</div>`;
+      } else {
+        tip.innerHTML = `<b>#${String(i).padStart(4,'0')}</b><br>まだ空いてる席<div class="d">あなたが入れます${ms}</div>`;
+      }
+      tip.classList.add('show');
+    });
+    c.addEventListener('mousemove', e=>{
+      const w = tip.offsetWidth, h = tip.offsetHeight;
+      let x = e.clientX + 14, y = e.clientY + 14;
+      if(x+w>innerWidth) x = e.clientX-w-14;
+      if(y+h>innerHeight) y = e.clientY-h-14;
+      tip.style.left = x+'px';
+      tip.style.top = y+'px';
+    });
+    c.addEventListener('mouseleave', ()=>tip.classList.remove('show'));
+    c.addEventListener('click', ()=>{
+      if(!map.has(i)) location.hash = '#pay';
+    });
+    frag.appendChild(c);
+  }
+  grid.appendChild(frag);
+
+  // Milestones
+  const msList = document.getElementById('msList');
+  CONFIG.MILESTONES.forEach(m=>{
+    const done = cur >= m;
+    const isNext = m === next && !done;
+    const div = document.createElement('div');
+    div.className = 'ms' + (done?' done':'') + (isNext?' next':'');
+    div.innerHTML = `<div class="n">${String(m).padStart(4,'0')}</div><div class="label">${done?'CLEARED':(isNext?'NEXT':'WAITING')}</div><div class="title">${MS_LABELS[m]||''}</div>`;
+    msList.appendChild(div);
+  });
+
+  // Named roster
+  const nList = document.getElementById('nList');
+  const named = killers.filter(k => k.name && k.name !== '優しい人');
+  if(named.length === 0){
+    nList.innerHTML = `<p style="grid-column:1/-1;text-align:center;padding:40px 0;color:var(--muted);">まだ名前を公開しているのは涼晴だけ。あなたの名前を、ここに刻みませんか？</p>`;
+  } else {
+    named.forEach(k=>{
+      const div = document.createElement('div');
+      div.className = 'n-card';
+      div.innerHTML = `<div class="id">#${String(k.id).padStart(4,'0')}</div><div class="name">${k.name}</div>${k.msg?`<div class="msg">${k.msg}</div>`:''}<div class="date">${k.date||''}</div>`;
+      nList.appendChild(div);
+    });
+  }
+
+  // Pay status
+  document.getElementById('payStatus').textContent = `${String(cur).padStart(4,'0')} / 1000`;
+  document.getElementById('payBig').innerHTML = `${max-cur}<span class="max">/1000残</span>`;
+  document.getElementById('successId').textContent = '#' + String(cur+1).padStart(4,'0');
+}
+
+/* ===== ENTER GATE ===== */
+(()=>{
+  const gate = document.getElementById('enterGate');
+  const play = document.getElementById('enterPlay');
+  const silent = document.getElementById('enterSilent');
+  function enter(sound){
+    gate.classList.add('gone');
+    if(sound){
+      Sound.forceOn();
+      document.getElementById('soundToggle').classList.add('on');
+    }
+  }
+  play.addEventListener('click', ()=>enter(true));
+  silent.addEventListener('click', e=>{e.preventDefault();enter(false);});
+})();
+
+/* ===== SOUND ===== */
+const Sound = (()=>{
+  let bgm=null, on=false, idx=0;
+  function start(){
+    if(!bgm){
+      bgm = new Audio();
+      bgm.volume = .55;
+      bgm.preload = "auto";
+      bgm.addEventListener('ended', ()=>{
+        idx++;
+        if(idx>=CONFIG.AUDIO_PLAYLIST.length){
+          if(CONFIG.AUDIO_LOOP) idx=0;
+          else return;
+        }
+        bgm.src = CONFIG.AUDIO_PLAYLIST[idx];
+        bgm.play().catch(()=>{});
+        updateLabel();
+      });
+    }
+    const target = CONFIG.AUDIO_PLAYLIST[idx];
+    if(!bgm.src || !bgm.src.endsWith(encodeURI(target).split('/').pop())){
+      bgm.src = target;
+    }
+    bgm.play().catch(()=>{});
+    updateLabel();
+  }
+  function updateLabel(){
+    const lbl = document.getElementById('soundLabel');
+    if(!lbl) return;
+    lbl.textContent = `SOUND ON · ${String(idx+1).padStart(2,'0')}/${String(CONFIG.AUDIO_PLAYLIST.length).padStart(2,'0')}`;
+  }
+  return {
+    toggle(){ on=!on; if(on)start(); else if(bgm)bgm.pause(); return on; },
+    forceOn(){ if(!on){on=true; start();} },
+    isOn(){ return on; }
+  };
+})();
+(()=>{
+  const btn = document.getElementById('soundToggle');
+  const lbl = document.getElementById('soundLabel');
+  btn.addEventListener('click', ()=>{
+    const o = Sound.toggle();
+    btn.classList.toggle('on', o);
+    if(!o) lbl.textContent = 'SOUND OFF';
+  });
+})();
+
+/* ===== FORM ===== */
+(()=>{
+  const form = document.getElementById('payForm');
+  const success = document.getElementById('paySuccess');
+  form.addEventListener('submit', e=>{
+    e.preventDefault();
+    const fd = new FormData(form);
+    const name = (fd.get('name')||'').toString().trim();
+    const email = (fd.get('email')||'').toString().trim();
+    const dream = (fd.get('dream')||'').toString().trim();
+    const pub = !!fd.get('public');
+    let ok = true;
+    const fN = document.getElementById('fName');
+    const fE = document.getElementById('fEmail');
+    fN.classList.toggle('error', !name);
+    fE.classList.toggle('error', !email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));
+    if(fN.classList.contains('error') || fE.classList.contains('error')) ok = false;
+    if(!ok) return;
+
+    if(CONFIG.FORM_ENDPOINT){
+      fetch(CONFIG.FORM_ENDPOINT, {method:'POST',mode:'no-cors',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({name,email,dream,public:pub?'yes':'no',amount:10000}).toString()}).catch(()=>{});
+    } else {
+      console.log('[1MAN-1000 PAID]', {name,email,dream,public:pub,amount:10000});
+    }
+    success.classList.add('show');
+    if(CONFIG.PAYPAY_URL){
+      const pp = document.getElementById('successPp');
+      pp.href = CONFIG.PAYPAY_URL;
+      pp.style.display = 'inline-block';
+      setTimeout(()=>window.open(CONFIG.PAYPAY_URL,'_blank'), 1500);
+    }
+  });
+})();
+
+/* ===== HERO TEXT ROW REVEAL (light CSS-only style) ===== */
+(()=>{
+  document.querySelectorAll('.hero-title .row span').forEach((el,i)=>{
+    el.style.transform = 'translateY(100%)';
+    el.style.opacity = '0';
+    el.style.transition = `transform 1.1s cubic-bezier(.2,.8,.2,1) ${i*.15+.3}s, opacity .8s ease ${i*.15+.3}s`;
+  });
+  // Trigger on enter gate dismissal
+  const obs = new MutationObserver(()=>{
+    if(document.getElementById('enterGate').classList.contains('gone')){
+      document.querySelectorAll('.hero-title .row span').forEach(el=>{
+        el.style.transform = 'translateY(0)'; el.style.opacity = '1';
+      });
+      obs.disconnect();
+    }
+  });
+  obs.observe(document.getElementById('enterGate'), {attributes:true, attributeFilter:['class']});
+})();
+
+/* ===== INIT ===== */
+loadKillers().then(render);
+</script>
+</body>
+</html>
