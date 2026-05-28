@@ -1,1 +1,7 @@
 .DS_Store
+
+# LINE Bot 認証情報（絶対にコミットしない）
+line-bot/.secrets.local.yml
+line-bot/.dev.vars
+line-bot/node_modules/
+line-bot/.wrangler/
