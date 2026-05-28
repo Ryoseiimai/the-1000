@@ -559,8 +559,9 @@ section{position:relative;z-index:5;}
 <!-- ============ MILESTONES ============ -->
 <section class="milestones">
   <div class="ms-head">
-    <h2>節目ごとに、<span class="red">集まる</span>。</h2>
-    <p>10人 / 20人 / 50人 / 200人 / 500人 / 1000人 — 到達するたびに全員でお祝いします。</p>
+    <h2>節目ごとに、<span class="red">本物の顔で集まる</span>。</h2>
+    <p><b>普段はリモートで完結します。</b> でも、10人集まったらオフラインで会います。20人、50人、200人 — 節目ごとに、画面の向こうから現実の場へ。<br>
+    <span style="color:var(--gold);font-family:'Crimson Pro',serif;font-style:italic;">— Remote by default. Offline at every milestone.</span></p>
   </div>
   <div class="ms-list" id="msList"></div>
 </section>
@@ -579,8 +580,8 @@ section{position:relative;z-index:5;}
     </div>
     <div class="p-item">
       <div class="num">ii.</div>
-      <div class="ttl">全員で、お祝いします。</div>
-      <div class="body">10/20/50/200/500/1000人の節目ごとに集会を開きます。借金が完済された日は、人生で一番大きなお祝いを、全員で。</div>
+      <div class="ttl">普段はリモート。節目はオフラインで。</div>
+      <div class="body">普段の交流はリモートで完結します。でも 10/20/50/200/500/1000人の節目ごとに、必ずオフラインで顔を合わせます。10人到達=第1回リアル会合。借金が完済された日は、人生で一番大きなお祝いを、全員で、同じ部屋で。</div>
     </div>
     <div class="p-item">
       <div class="num">iii.</div>
@@ -680,12 +681,12 @@ const CONFIG = {
 };
 
 const MS_LABELS = {
-  10: "第1回集会・10名",
-  20: "第2回集会・二桁の壁",
-  50: "第3回集会・五十名",
-  200: "第4回集会・¥2M",
-  500: "第5回集会・半数",
-  1000: "FINAL集会・借金完済",
+  10: "第1回オフライン会合・最初の10人",
+  20: "第2回オフライン会合・二桁の壁",
+  50: "第3回オフライン会合・五十名",
+  200: "第4回オフライン会合・¥2M到達",
+  500: "第5回オフライン会合・半数",
+  1000: "FINAL会合・借金完済の日",
 };
 
 /* ===== LOAD KILLERS ===== */
@@ -731,7 +732,7 @@ function render(killers){
     c.dataset.id = i;
     c.addEventListener('mouseenter', e=>{
       const k = map.get(i);
-      const ms = CONFIG.MILESTONES.includes(i) ? ' · 集会マイルストーン' : '';
+      const ms = CONFIG.MILESTONES.includes(i) ? ' · オフライン会合マイルストーン' : '';
       if(k){
         tip.innerHTML = `<b>#${String(i).padStart(4,'0')} ${k.name||'優しい人'}</b>${k.msg?`<br>${k.msg}`:''}<div class="d">${k.date||''}${ms}</div>`;
       } else {
