@@ -1,0 +1,16 @@
+name = "the-1000-bot"
+main = "worker.js"
+compatibility_date = "2026-05-30"
+workers_dev = true
+
+# 観測ログを残す（任意・トラブル時の追跡用）
+[observability]
+enabled = true
+
+# Secrets は別途 CLI で投入する（このファイルに書かない）:
+#   wrangler secret put LINE_CHANNEL_ACCESS_TOKEN
+#   wrangler secret put LINE_CHANNEL_SECRET
+#   wrangler secret put ADMIN_LINE_USER_ID
+#   wrangler secret put GITHUB_PAT
+#   wrangler secret put ANTHROPIC_API_KEY
+#   wrangler secret put OPENCHAT_INVITE_URL

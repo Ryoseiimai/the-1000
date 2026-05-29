@@ -1,0 +1,15 @@
+# .dev.vars.example
+#
+# このファイルをコピーして .dev.vars にリネーム、実値を書き込む。
+# .dev.vars は .gitignore 対象。絶対にコミットしない。
+#
+#   cp .dev.vars.example .dev.vars
+#   # 実値を書く
+#   npx wrangler dev    # ローカル http://localhost:8787 で起動
+
+LINE_CHANNEL_ACCESS_TOKEN=PLACEHOLDER_paste_long_token_from_LINE_Developers
+LINE_CHANNEL_SECRET=PLACEHOLDER_paste_secret_from_LINE_Developers
+ADMIN_LINE_USER_ID=PLACEHOLDER_Uxxxxxxxxxxxxxxxxx
+GITHUB_PAT=PLACEHOLDER_ghp_xxxxxxxxxxxxxxxxxxxxxxxxxx
+ANTHROPIC_API_KEY=PLACEHOLDER_sk-ant-xxxxxxxxxxxxxxxx
+OPENCHAT_INVITE_URL=https://line.me/ti/g2/PLACEHOLDER
