@@ -702,6 +702,13 @@ async function loadKillers(){
 }
 
 /* ===== RENDER ===== */
+// 名簿の name/msg は来訪者が自由に書ける文字列なので、画面に差し込む前に必ずここを通す。
+// これを素通りさせるとHTMLタグが実行されてしまう(保存型XSS)ので、新しい表示箇所を増やすときも必ず通すこと。
+function escHtml(s){
+  return String(s==null?'':s).replace(/[&<>"']/g, ch => ({
+    '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+  }[ch]));
+}
 function render(killers){
   const cur = killers.length;
   const max = CONFIG.MAX;
@@ -734,7 +741,7 @@ function render(killers){
       const k = map.get(i);
       const ms = CONFIG.MILESTONES.includes(i) ? ' · オフライン会合マイルストーン' : '';
       if(k){
-        tip.innerHTML = `<b>#${String(i).padStart(4,'0')} ${k.name||'優しい人'}</b>${k.msg?`<br>${k.msg}`:''}<div class="d">${k.date||''}${ms}</div>`;
+        tip.innerHTML = `<b>#${String(i).padStart(4,'0')} ${escHtml(k.name||'優しい人')}</b>${k.msg?`<br>${escHtml(k.msg)}`:''}<div class="d">${escHtml(k.date||'')}${ms}</div>`;
       } else {
         tip.innerHTML = `<b>#${String(i).padStart(4,'0')}</b><br>まだ空いてる席<div class="d">あなたが入れます${ms}</div>`;
       }
@@ -776,7 +783,7 @@ function render(killers){
     named.forEach(k=>{
       const div = document.createElement('div');
       div.className = 'n-card';
-      div.innerHTML = `<div class="id">#${String(k.id).padStart(4,'0')}</div><div class="name">${k.name}</div>${k.msg?`<div class="msg">${k.msg}</div>`:''}<div class="date">${k.date||''}</div>`;
+      div.innerHTML = `<div class="id">#${String(k.id).padStart(4,'0')}</div><div class="name">${escHtml(k.name)}</div>${k.msg?`<div class="msg">${escHtml(k.msg)}</div>`:''}<div class="date">${escHtml(k.date||'')}</div>`;
       nList.appendChild(div);
     });
   }

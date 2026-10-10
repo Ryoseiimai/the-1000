@@ -272,6 +272,13 @@ JSON以外の出力は禁止。`;
   }
 }
 
+// 保存する name/msg は来訪者が自由に書いた文字列。index.html側は表示直前に無害化しているが、
+// 他の表示先が増えたときのために保存時点でも < > を取り除いておく(タグとして組み立てられなくする)。
+// export はテスト(test/xss-fix.test.mjs)から直接呼ぶためのもので、Workers本番動作には影響しない。
+export function stripAngleBrackets(s) {
+  return String(s == null ? "" : s).replace(/[<>]/g, "");
+}
+
 async function executeConfirm(replyToken, env, payload) {
   const killers = await loadKillers(env);
   const id = payload.id || (killers.length + 1);
@@ -279,8 +286,8 @@ async function executeConfirm(replyToken, env, payload) {
 
   const newEntry = {
     id,
-    name: payload.public ? payload.name : "優しい人",
-    msg: payload.msg || "",
+    name: payload.public ? stripAngleBrackets(payload.name) : "優しい人",
+    msg: stripAngleBrackets(payload.msg || ""),
     date: today,
   };
 
